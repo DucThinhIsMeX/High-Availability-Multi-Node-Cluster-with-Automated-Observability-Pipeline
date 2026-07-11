@@ -1,0 +1,25 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: "telegram-notify"
+  group_by: ["alertname", "instance"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+receivers:
+  - name: "telegram-notify"
+    telegram_configs:
+      - bot_token: "YOUR_BOT_TOKEN_HERE"          # Replace with your Telegram Bot Token (e.g. "123456789:ABCdefGh...")
+        chat_id: -1001234567890                     # Replace with your Telegram Group Chat ID (must be an integer, e.g. -100xxxxxxxxx)
+        send_resolved: true
+        message: |
+          {{ if eq .Status "firing" }}🔴 CẢNH BÁO (ALERT TRIGGERED){{ else }}🟢 ĐÃ PHỤC HỒI (RESOLVED){{ end }}
+
+          Tên cảnh báo: {{ .CommonLabels.alertname }}
+          Server bị ảnh hưởng: {{ .CommonLabels.instance_name }}
+          Mức độ nghiêm trọng: {{ .CommonLabels.severity }}
+          {{ range .Alerts }}
+          📝 Chi tiết: {{ .Annotations.description }}
+          {{ end }}

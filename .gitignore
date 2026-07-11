@@ -1,0 +1,7 @@
+# Volume storage
+prometheus-data/
+grafana-data/
+
+# Sensitive data / configs
+*.env
+secrets/

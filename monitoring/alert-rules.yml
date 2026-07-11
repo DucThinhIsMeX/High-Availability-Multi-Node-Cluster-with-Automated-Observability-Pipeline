@@ -1,0 +1,42 @@
+groups:
+  - name: hardware_alerts
+    rules:
+      # Trigger alert when CPU usage is > 80% for 2 minutes
+      - alert: HighCpuUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU cao trên {{ $labels.instance_name }}"
+          description: "CPU đang ở mức {{ $value | printf \"%.1f\" }}% trên {{ $labels.instance_name }}"
+
+      # Trigger alert when Memory usage is > 80% for 2 minutes
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RAM cao trên {{ $labels.instance_name }}"
+          description: "RAM đang ở mức {{ $value | printf \"%.1f\" }}%"
+
+      # Trigger alert when Disk usage is > 85% for 5 minutes
+      - alert: HighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100 > 85
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk gần đầy trên {{ $labels.instance_name }}"
+          description: "Disk đã sử dụng {{ $value | printf \"%.1f\" }}%"
+
+      # Trigger alert when a Node goes offline (up == 0) for 30 seconds
+      - alert: NodeDown
+        expr: up == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node {{ $labels.instance_name }} không phản hồi!"
+          description: "Không thể thu thập metrics từ {{ $labels.instance }} trong 30 giây."

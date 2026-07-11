@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  webapp:
+    image: traefik/whoami:latest
+    deploy:
+      replicas: 4                    # 4 replicas to distribute across workers
+      placement:
+        constraints:
+          - node.role == worker      # Deploy only on workers to keep Master clean
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: overlay

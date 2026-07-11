@@ -1,0 +1,38 @@
+global:
+  scrape_interval: 5s          # Collect metrics every 5 seconds
+  evaluation_interval: 5s
+
+# Connect Alertmanager
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "alertmanager:9093"
+
+# Load alert rules files
+rule_files:
+  - "alert-rules.yml"
+
+# Targets to scrape metrics from
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "master-node"
+    static_configs:
+      - targets: ["192.168.56.10:9100"]
+        labels:
+          instance_name: "master-node"
+
+  - job_name: "worker-01"
+    static_configs:
+      - targets: ["192.168.56.11:9100"]
+        labels:
+          instance_name: "worker-01"
+
+  - job_name: "worker-02"
+    static_configs:
+      - targets: ["192.168.56.12:9100"]
+        labels:
+          instance_name: "worker-02"
