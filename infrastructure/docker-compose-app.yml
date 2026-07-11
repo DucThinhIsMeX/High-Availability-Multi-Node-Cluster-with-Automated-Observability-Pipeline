@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   webapp:
-    image: traefik/whoami:latest
+    image: nginx:alpine
     deploy:
       replicas: 4                    # 4 replicas to distribute across workers
       placement:

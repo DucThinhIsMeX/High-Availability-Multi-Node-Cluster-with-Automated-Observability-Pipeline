@@ -19,20 +19,20 @@ scrape_configs:
     static_configs:
       - targets: ["localhost:9090"]
 
-  - job_name: "master-node"
+  - job_name: "swarm-master"
     static_configs:
       - targets: ["192.168.56.10:9100"]
         labels:
-          instance_name: "master-node"
+          instance_name: "swarm-master"
 
-  - job_name: "worker-01"
+  - job_name: "swarm-worker1"
     static_configs:
       - targets: ["192.168.56.11:9100"]
         labels:
-          instance_name: "worker-01"
+          instance_name: "swarm-worker1"
 
-  - job_name: "worker-02"
+  - job_name: "swarm-worker2"
     static_configs:
       - targets: ["192.168.56.12:9100"]
         labels:
-          instance_name: "worker-02"
+          instance_name: "swarm-worker2"
